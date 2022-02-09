@@ -1,23 +1,24 @@
 services:
   db:
-    image: postgres:9
+    image: postgres:9.6.24
     environment:
+      POSTGRES_DB: axelor-db
       POSTGRES_USER: axelor
-      POSTGRES_PASSWORD: axelor
-      POSTGRES_DB: axelor
+      POSTGRES_PASSWORD: changeme
     volumes:
-      - ./db:/var/lib/postgresql/data
+      - ./db_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT}:5432"
   tomcat:
-    image: tomcat:8.5-jdk8
+    image: tomcat:8.5.75-jre8-openjdk
     ports:
-      - "8080:8080"
-      - "8000:8000"
+      - "${TOMCAT_PORT}:8080"
+      - "${TOMCAT_DEBUG}:8000"
     volumes:
       - ./webapps:/usr/local/tomcat/webapps
-      - ./data:/root/data
+      - ./axelor_data:/root/data
     environment:
       JPDA_ADDRESS: 8000
       JPDA_TRANSPORT: dt_socket
     command: catalina.sh jpda run
+
